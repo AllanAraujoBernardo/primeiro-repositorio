@@ -93,10 +93,10 @@
                     <div>
                         <h1>Sensor LDR - Luminosidade</h1>
                             <section>
-                                <h2>Média: <label id='average'>0.00</label></h2>
+                                <h2>Média: <label id='average2'>0.00</label></h2>
                             </section>
                             <section style="width:100%">
-                                <canvas id="chart"></canvas>
+                                <canvas id="chart2"></canvas>
                         <section>
                     </div>
                 </div>
@@ -173,7 +173,46 @@
         
 		var chart = new Chart(context, configuration);
 
+// gráfico 2
+
+        var context2 = document.getElementById("chart2").getContext("2d");
+		context2.canvas.width = 100;
+		context2.canvas.height = 60;
         
+        var configuration2 = {
+			type: 'line',
+			data: {
+				datasets: [{
+					label: "Luminosidade",
+					type: 'line',
+					borderColor: ['rgb(112, 173, 71)'],
+					backgroundColor: ['rgb(169, 209, 142)']
+				}]
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						distribution: 'series',
+                        ticks: {
+                            beginAtZero:true
+                        }
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+                        },
+                        ticks: {
+                            beginAtZero:true
+                        }
+					}]
+				},
+				animation: {
+					duration: 0
+				}
+			}
+        };
+        
+		var chart2 = new Chart(context2, configuration2);
         
 
         //Função para obter os dados de temperatura do server
@@ -210,8 +249,23 @@
                 chart.data.datasets[0].data.push(parseFloat(data));
                 chart.update();
 			});
-			
+
+// para atualizar o segundo gráfico
+
+            listTemp.forEach(data => {
+                //Máximo de 60 itens exibidos no gráfico
+                if (chart2.data.labels.length == 10 && chart2.data.datasets[0].data.length == 10){
+                    chart2.data.labels.shift();
+                    chart2.data.datasets[0].data.shift();
+                }
+
+                chart2.data.labels.push(this.time++);
+                chart2.data.datasets[0].data.push(parseFloat(data));
+                chart2.update();
+			});
+            
 			document.getElementById('average').textContent = obj.average;
+            document.getElementById('average2').textContent = obj.average;
 		} 
 
         setInterval(() => {
